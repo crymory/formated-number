@@ -1,513 +1,191 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Извлечение номеров телефонов</title>
+    <title>Форматування Телефонних Номерів</title>
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --accent-color: #4d8cff;
-            --secondary-bg: #2d2d2d;
-            --input-bg: #333333;
-            --success-color: #4caf50;
-            --error-color: #f44336;
-            --highlight-color: #ffeb3b;
+            --bg-primary: #f4f4f4;
+            --bg-secondary: #ffffff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --accent-color: #3498db;
+            --border-color: #e0e0e0;
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+
+        [data-theme='dark'] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #4CAF50;
+            --border-color: #333;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: var(--secondary-bg);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        h1, h2 {
-            color: var(--accent-color);
-            margin-top: 0;
-        }
-        
-        textarea, input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            font-size: 16px;
-            resize: vertical;
+            padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
         }
-        
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
         button {
             background-color: var(--accent-color);
             color: white;
             border: none;
-            padding: 12px 20px;
-            margin: 10px 5px 10px 0;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-        
-        button:hover {
-            background-color: #3a6ec0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .phone-result {
-            background-color: var(--input-bg);
-            border-radius: 5px;
-            padding: 15px;
-            margin-top: 10px;
-            overflow-wrap: break-word;
-            min-height: 50px;
-        }
-        
-        .phone-item {
-            background-color: rgba(77, 140, 255, 0.2);
-            padding: 5px 10px;
-            margin: 5px;
-            border-radius: 4px;
-            display: inline-block;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .phone-item:hover {
-            background-color: rgba(77, 140, 255, 0.4);
-        }
-        
-        .phone-stats {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #aaa;
-        }
-        
-        .format-options {
-            margin: 15px 0;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-        
-        .format-options h3 {
-            margin-top: 0;
-        }
-        
-        .copy-btn {
-            background-color: #2d8530;
-            margin-left: 10px;
-        }
-        
-        .copy-btn:hover {
-            background-color: #1e6423;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
             padding: 10px 20px;
-            background-color: var(--input-bg);
-            border: none;
-            color: var(--text-color);
+            border-radius: 8px;
             cursor: pointer;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
-        
-        .tab.active {
-            background-color: var(--accent-color);
-            color: white;
+
+        button:hover {
+            opacity: 0.9;
         }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            background-color: var(--success-color);
-            color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 15px;
         }
-        
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
+
+        #result {
+            margin-top: 20px;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            white-space: pre-wrap;
+            border: 1px solid var(--border-color);
+            max-height: 200px;
+            overflow-y: auto;
         }
-        
-        .error-notification {
-            background-color: var(--error-color);
-        }
-        
-        /* Режим для печати */
-        @media print {
-            body {
-                background-color: white;
-                color: black;
-            }
-            
+
+        @media (max-width: 480px) {
             .container {
-                box-shadow: none;
-                border: 1px solid #ddd;
+                padding: 15px;
             }
-            
-            button, .tabs {
-                display: none;
+
+            .button-group {
+                flex-direction: column;
             }
-        }
-        
-        /* Адаптивный дизайн */
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
+
             button {
                 width: 100%;
-                margin: 5px 0;
+                margin-bottom: 10px;
             }
-        }
-        
-        /* Стили для подсветки найденных номеров в исходном тексте */
-        .highlight-text {
-            background-color: rgba(255, 235, 59, 0.3);
-            padding: 2px 0;
-            border-radius: 3px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Извлечение номеров телефонов</h1>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('extract')">Извлечение номеров</button>
-            <button class="tab" onclick="switchTab('validate')">Проверка номера</button>
-            <button class="tab" onclick="switchTab('about')">О программе</button>
+        <h1>📱 Форматування Телефонних Номерів</h1>
+        <textarea id="phoneInput" placeholder="Вставте номери телефонів"></textarea>
+        <div class="button-group">
+            <button onclick="formatPhoneNumbers()">Форматувати</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Змінити тему</button>
         </div>
-        
-        <div id="extract-tab" class="tab-content">
-            <p>Введите текст, содержащий номера телефонов:</p>
-            <textarea id="inputText" rows="8" placeholder="Например: Позвоните мне по номеру +79123456789 или 89001234567"></textarea>
-            
-            <div class="format-options">
-                <h3>Настройки форматирования:</h3>
-                <input type="checkbox" id="addZero" checked> 
-                <label for="addZero">Добавлять '0' перед последними 9 цифрами</label><br>
-                
-                <input type="checkbox" id="removeCountryCode" checked> 
-                <label for="removeCountryCode">Убирать код страны</label><br>
-                
-                <p>Разделитель номеров:</p>
-                <input type="radio" id="formatPipe" name="separator" value="|" checked> 
-                <label for="formatPipe">Вертикальная черта (|)</label><br>
-                
-                <input type="radio" id="formatComma" name="separator" value=", "> 
-                <label for="formatComma">Запятая (,)</label><br>
-                
-                <input type="radio" id="formatNewline" name="separator" value="\n"> 
-                <label for="formatNewline">Новая строка</label><br>
-            </div>
-            
-            <button onclick="extractPhoneNumbers()">Извлечь номера телефонов</button>
-            <button onclick="clearAll()">Очистить все</button>
-            
-            <h2>Результат:</h2>
-            <div class="phone-result" id="output"></div>
-            
-            <div id="phone-items" class="phone-result" style="display: none;">
-                <h3>Найденные номера:</h3>
-                <div id="phone-list"></div>
-                <div class="phone-stats" id="stats"></div>
-                <button onclick="copyAllNumbers()" class="copy-btn">Копировать все</button>
-            </div>
-        </div>
-        
-        <div id="validate-tab" class="tab-content" style="display: none;">
-            <h2>Проверка номера телефона</h2>
-            <p>Введите номер телефона для проверки:</p>
-            <input type="text" id="validatePhone" placeholder="Например: +79123456789">
-            <button onclick="validatePhoneNumber()">Проверить</button>
-            
-            <div class="phone-result" id="validation-result"></div>
-        </div>
-        
-        <div id="about-tab" class="tab-content" style="display: none;">
-            <h2>О программе</h2>
-            <p>Эта программа позволяет извлечь номера телефонов из текста и отформатировать их по вашему желанию.</p>
-            <p>Поддерживаемые форматы номеров:</p>
-            <ul>
-                <li>+7XXXXXXXXXX</li>
-                <li>8XXXXXXXXXX</li>
-                <li>XXXXXXXXXX (10 цифр)</li>
-                <li>И другие форматы с кодами стран</li>
-            </ul>
-            <p>Программа автоматически определяет номера телефонов в тексте и позволяет гибко настроить их отображение.</p>
-        </div>
+        <div id="result"></div>
     </div>
-    
-    <div class="notification" id="notification">Номера скопированы в буфер обмена</div>
-    
+
     <script>
-        function extractPhoneNumbers() {
-            // Получаем введенный пользователем текст
-            let inputText = document.getElementById("inputText").value;
-            
-            if (!inputText.trim()) {
-                showNotification("Пожалуйста, введите текст для обработки", true);
-                return;
-            }
-            
-            // Создаем регулярное выражение для поиска номеров телефонов (улучшенное)
-            // Поддерживает различные форматы: +7xxx, 8xxx, только цифры и т.д.
-            let phoneRegex = /(?:\+|7|8)?(?:\d[\s-]?){10,}/g;
-            
-            // Ищем все номера телефонов в тексте
-            let phoneMatches = inputText.match(phoneRegex);
-            
-            if (!phoneMatches || phoneMatches.length === 0) {
-                document.getElementById("output").innerHTML = "Номера телефонов не найдены";
-                document.getElementById("phone-items").style.display = "none";
-                return;
-            }
-            
-            // Очищаем номера от пробелов, дефисов и т.д.
-            let phoneNumbers = phoneMatches.map(number => {
-                return number.replace(/[\s-]/g, '');
-            });
-            
-            // Получаем настройки форматирования
-            let addZero = document.getElementById("addZero").checked;
-            let removeCountryCode = document.getElementById("removeCountryCode").checked;
-            let separator = document.querySelector('input[name="separator"]:checked').value;
-            
-            if (separator === "\\n") separator = "\n";
-            
-            // Форматируем номера телефонов в требуемый формат
-            let formattedNumbers = phoneNumbers.map(number => {
-                // Очищаем номер до чистых цифр
-                let digits = number.replace(/\D/g, '');
-                
-                // Если номер начинается с 7 или 8 и длина больше 10, считаем это кодом страны
-                if (removeCountryCode && (digits.startsWith('7') || digits.startsWith('8')) && digits.length > 10) {
-                    digits = digits.slice(1);
-                }
-                
-                // Если номер начинается с "+" и включен флаг удаления кода страны
-                if (removeCountryCode && number.startsWith('+')) {
-                    if (digits.length > 10) {
-                        // Оставляем только последние 10 цифр
-                        digits = digits.slice(-10);
-                    }
-                }
-                
-                // Добавляем 0 перед последними 9 цифрами, если включена опция
-                if (addZero) {
-                    return "0" + digits.slice(-9);
-                } else {
-                    return digits;
-                }
-            });
-            
-            // Удаляем дубликаты
-            let uniqueFormattedNumbers = [...new Set(formattedNumbers)];
-            
-            // Выводим отформатированные номера телефонов
-            document.getElementById("output").innerHTML = uniqueFormattedNumbers.join(separator);
-            
-            // Выводим отдельные блоки с номерами
-            let phoneListHtml = '';
-            uniqueFormattedNumbers.forEach(number => {
-                phoneListHtml += `<span class="phone-item" onclick="copyToClipboard('${number}')">${number}</span>`;
-            });
-            
-            document.getElementById("phone-list").innerHTML = phoneListHtml;
-            document.getElementById("phone-items").style.display = "block";
-            
-            // Добавляем статистику
-            document.getElementById("stats").innerHTML = `Найдено номеров: ${phoneMatches.length}, уникальных: ${uniqueFormattedNumbers.length}`;
-            
-            // Подсвечиваем номера в исходном тексте
-            highlightPhoneNumbers(inputText, phoneMatches);
+        // Theme management
+        function toggleTheme() {
+            const htmlElement = document.documentElement;
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            htmlElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
         }
-        
-        function highlightPhoneNumbers(text, matches) {
-            let highlightedText = text;
+
+        // Set default theme
+        document.documentElement.setAttribute('data-theme', 'light');
+
+        function normalizePhoneNumber(number) {
+            // Remove all non-digit characters
+            let cleaned = number.replace(/\D/g, '');
             
-            // Заменяем найденные номера на подсвеченные версии
-            for (let match of matches) {
-                highlightedText = highlightedText.replace(match, `<span class="highlight-text">${match}</span>`);
+            // Handle different length scenarios
+            if (cleaned.startsWith('380')) {
+                cleaned = cleaned.slice(2);
             }
             
-            // В реальном приложении можно было бы отобразить подсвеченный текст
-            // Эта функция подготавливает такой текст, но пока не используется в интерфейсе
+            // Ensure 10 digits
+            if (cleaned.length === 10) {
+                return cleaned;
+            }
+            
+            return null;
         }
-        
-        function validatePhoneNumber() {
-            const phoneInput = document.getElementById("validatePhone").value.trim();
-            const resultDiv = document.getElementById("validation-result");
+
+        function formatPhoneNumbers() {
+            const input = document.getElementById('phoneInput').value;
+            const resultDiv = document.getElementById('result');
             
-            if (!phoneInput) {
-                resultDiv.innerHTML = "Пожалуйста, введите номер телефона";
-                return;
-            }
+            // Split input by lines or spaces
+            const numbers = input.split(/[\n\r]+/);
             
-            // Очищаем номер от всех символов кроме цифр
-            const digitsOnly = phoneInput.replace(/\D/g, '');
+            const formattedNumbers = numbers
+                .map(number => {
+                    const normalized = normalizePhoneNumber(number);
+                    return normalized ? normalized : number;
+                })
+                .filter(number => number !== null)
+                .join(' | ');
             
-            // Проверка на корректную длину номера
-            let isValid = false;
-            let formatInfo = "";
-            
-            if (digitsOnly.length === 11 && (digitsOnly.startsWith('7') || digitsOnly.startsWith('8'))) {
-                isValid = true;
-                formatInfo = "Стандартный российский номер";
-            } else if (digitsOnly.length === 10) {
-                isValid = true;
-                formatInfo = "Номер без кода страны";
-            } else if (digitsOnly.length > 11) {
-                isValid = false;
-                formatInfo = "Слишком длинный номер";
-            } else if (digitsOnly.length < 10) {
-                isValid = false;
-                formatInfo = "Слишком короткий номер";
-            } else {
-                isValid = false;
-                formatInfo = "Неизвестный формат номера";
-            }
-            
-            // Отображаем результат
-            if (isValid) {
-                resultDiv.innerHTML = 
-                    `<span style="color: var(--success-color);">✓ Номер валидный</span><br>` +
-                    `<strong>Формат:</strong> ${formatInfo}<br>` +
-                    `<strong>Только цифры:</strong> ${digitsOnly}<br>` +
-                    `<strong>В формате +7:</strong> +7${digitsOnly.slice(-10)}`;
-            } else {
-                resultDiv.innerHTML = 
-                    `<span style="color: var(--error-color);">✗ Номер невалидный</span><br>` +
-                    `<strong>Причина:</strong> ${formatInfo}`;
-            }
+            resultDiv.textContent = formattedNumbers;
         }
-        
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification("Номер скопирован: " + text);
-            }).catch(err => {
-                showNotification("Не удалось скопировать: " + err, true);
-            });
-        }
-        
-        function copyAllNumbers() {
-            let output = document.getElementById("output").innerText;
-            
-            if (output && output !== "Номера телефонов не найдены") {
-                navigator.clipboard.writeText(output).then(() => {
-                    showNotification("Все номера скопированы в буфер обмена");
-                }).catch(err => {
-                    showNotification("Не удалось скопировать: " + err, true);
-                });
-            } else {
-                showNotification("Нет номеров для копирования", true);
-            }
-        }
-        
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById("notification");
-            notification.innerText = message;
-            
-            // Добавляем или удаляем класс ошибки
-            if (isError) {
-                notification.classList.add("error-notification");
-            } else {
-                notification.classList.remove("error-notification");
-            }
-            
-            // Показываем уведомление
-            notification.classList.add("show");
-            
-            // Скрываем уведомление через 3 секунды
-            setTimeout(() => {
-                notification.classList.remove("show");
-            }, 3000);
-        }
-        
-        function clearAll() {
-            document.getElementById("inputText").value = "";
-            document.getElementById("output").innerHTML = "";
-            document.getElementById("phone-items").style.display = "none";
-        }
-        
-        function switchTab(tabName) {
-            // Скрываем все вкладки
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].style.display = "none";
-            }
-            
-            // Убираем активный класс у всех кнопок вкладок
-            const tabs = document.getElementsByClassName("tab");
-            for (let i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove("active");
-            }
-            
-            // Показываем выбранную вкладку
-            document.getElementById(tabName + "-tab").style.display = "block";
-            
-            // Делаем кнопку выбранной вкладки активной
-            const activeTabButtons = document.querySelectorAll(`.tab[onclick="switchTab('${tabName}')"]`);
-            activeTabButtons.forEach(button => {
-                button.classList.add("active");
-            });
-        }
-        
-        // Инициализация при загрузке страницы
-        document.addEventListener("DOMContentLoaded", function() {
-            // Устанавливаем первую вкладку как активную по умолчанию
-            switchTab('extract');
-            
-            // Добавляем обработчики событий для проверки номера по нажатию Enter
-            document.getElementById("validatePhone").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    validatePhoneNumber();
-                }
-            });
-            
-            // Обработчик для извлечения номеров по нажатию Enter в текстовом поле
-            document.getElementById("inputText").addEventListener("keydown", function(event) {
-                if (event.ctrlKey && event.key === "Enter") {
-                    extractPhoneNumbers();
-                }
-            });
-        });
     </script>
 </body>
 </html>
